@@ -1,23 +1,29 @@
 import {
-  listContacts,
-  getContactById,
-  removeContact,
   addContact,
-  updateContactById,
   getUpdateStatusContact,
+  getContactsByFilter,
+  getContactByFilter,
+  updateContactByFilter,
+  removeContactByFilter,
+  getContactsCountByFilter,
 } from "../services/contactsServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
 
 const getAllContacts = async (req, res) => {
-  const result = await listContacts();
-  res.status(200).json(result);
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 20 } = req.query;
+  const skip = (page - 1) * limit;
+  const result = await getContactsByFilter({ owner }, { skip, limit });
+  const total = await getContactsCountByFilter({ owner });
+  res.status(200).json(total, result);
 };
 
 const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const result = await getContactById(id);
+  const { _id: owner } = req.user;
+  const result = await getContactByFilter({ _id: id, owner });
   if (!result) {
     throw HttpError(404, "Not Found");
   }
@@ -26,7 +32,7 @@ const getOneContact = async (req, res) => {
 
 const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await removeContact(id);
+  const result = await removeContactByFilter({ _id: id, owner });
   if (!result) {
     throw HttpError(404, `Not found`);
   }
@@ -34,14 +40,16 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
-  const result = await addContact(req.body);
+  const { _id: owner } = req.user;
+  const result = await addContact(...req.body, owner);
 
   res.status(201).json(result);
 };
 
 const updateContact = async (req, res) => {
   const { id } = req.params;
-  const result = await updateContactById(id, req.body);
+  const result = await updateContactByFilter({ _id: id, owner }, req.body);
+
   if (!result) {
     throw HttpError(404, `Not found`);
   }
