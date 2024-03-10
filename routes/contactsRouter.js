@@ -5,6 +5,7 @@ import validateBody from "../helpers/validateBody.js";
 
 import isValidId from "../middelwares/isValidId.js";
 import authtenticate from "../middelwares/authtenticate.js";
+import upload from "../middelwares/upload.js";
 
 import {
   addSchema,
@@ -24,6 +25,7 @@ contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
 contactsRouter.post(
   "/",
+  upload.single("photo"),
   validateBody(addSchema),
   contactsControllers.createContact
 );

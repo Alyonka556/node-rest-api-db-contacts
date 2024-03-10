@@ -11,7 +11,7 @@ const authRouter = express.Router();
 
 authRouter.post("/signup", validateBody(signUpSchema), authController.signUp);
 
-authRouter.post("/signin", validateBody(signInSchema), authController.signUp);
+authRouter.post("/signin", validateBody(signInSchema), authController.signIn);
 
 authRouter.get("/current", authtenticate);
 
