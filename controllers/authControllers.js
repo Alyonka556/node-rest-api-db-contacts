@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import "dotenv/config";
 
 import * as authServices from "../services/authServices.js";
+import * as userServices from "../services/userServices.js";
 
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 import HttpError from "../helpers/HttpError.js";
@@ -11,11 +12,13 @@ const { JWT_SECRET } = process.env;
 
 const signUp = async (req, res) => {
   const { email } = req.body;
-  const newUser = await authServices.signUp(req.body);
-  const user = await authServices.findUser({ email });
+
+  const user = await userServices.findUser({ email });
   if (user) {
     throw HttpError(409, "Email already in use");
   }
+
+  const newUser = await authServices.signUp(req.body);
   res.status(201).json({
     email: newUser.email,
     password: newUser.password,
@@ -24,8 +27,8 @@ const signUp = async (req, res) => {
 
 const signIn = async (req, res) => {
   const { email, password } = req.body;
-  const newUser = await authServices.signIn(req.body);
-  const user = await authServices.findUser({ email });
+  // const newUser = await authServices.signIn(req.body);
+  const user = await userServices.findUser({ email });
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }
@@ -40,6 +43,10 @@ const signIn = async (req, res) => {
   await authServices.setToken(user._id, token);
   res.json({
     token,
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+    },
   });
 };
 

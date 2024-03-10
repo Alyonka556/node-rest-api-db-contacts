@@ -7,7 +7,7 @@ export const signUpSchema = Joi.object({
     "string.min": "Password must be longer than 6 symbols",
     "any.required": "Password must be longer than 6 symbols",
   }),
-  email: Joi.string().email().pattern(emailRegexp).required().messages({
+  email: Joi.string().email().required().messages({
     "string.email": "Email must be a valid address",
     "any.required": "Email is required",
   }),
@@ -20,7 +20,7 @@ export const signInSchema = Joi.object({
   password: Joi.string().min(6).required().messages({
     "any.required": "Enter password",
   }),
-  email: Joi.string().pattern(emailRegexp).required().messages({
+  email: Joi.string().email().required().messages({
     "any.required": "Enter email",
   }),
   subscription: Joi.string().valid("starter", "pro", "business").messages({
