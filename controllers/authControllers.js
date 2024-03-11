@@ -61,7 +61,7 @@ const verify = async (req, res) => {
     { verify: true, verificationCode: "" }
   );
   res.json({
-    message: "Verify sucess",
+    message: "Verification successful",
   });
 };
 
@@ -72,7 +72,7 @@ const resendVerifyEmail = async (req, res) => {
     throw HttpError(404, "User not found");
   }
   if (user.verify) {
-    throw HttpError(400, "User already verify");
+    throw HttpError(400, "Verification has already been passed");
   }
 
   const verifyEmail = {
@@ -82,7 +82,9 @@ const resendVerifyEmail = async (req, res) => {
   };
 
   await sendEmail(verifyEmail);
-  res.json({});
+  res.json({
+    message: "Verification email sent",
+  });
 };
 
 const signIn = async (req, res) => {
