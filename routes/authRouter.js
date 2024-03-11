@@ -5,13 +5,25 @@ import authController from "../controllers/authControllers.js";
 import validateBody from "../helpers/validateBody.js";
 import authtenticate from "../middelwares/authtenticate.js";
 
-import { signUpSchema, signInSchema } from "../schemas/usersSchemas.js";
+import {
+  signUpSchema,
+  signInSchema,
+  verifySchema,
+} from "../schemas/usersSchemas.js";
 
 import upload from "../middelwares/upload.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/signup", validateBody(signUpSchema), authController.signUp);
+
+authRouter.get("/verify/:verificationCode", authController.verify);
+
+authRouter.post(
+  "/verify",
+  validateBody(verifySchema),
+  authController.resendVerifyEmail
+);
 
 authRouter.post("/signin", validateBody(signInSchema), authController.signIn);
 

@@ -27,3 +27,7 @@ export const signInSchema = Joi.object({
     "any.only": "Subscription has only 3 values: starter, pro, business",
   }),
 });
+
+export const verifySchema = Joi.object({
+  email: Joi.string().email().required(),
+});
